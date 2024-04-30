@@ -1,0 +1,8 @@
+{
+  "toml": {
+  },
+  "excludes": [],
+  "plugins": [
+    "https://plugins.dprint.dev/toml-0.6.1.wasm"
+  ]
+}

@@ -1,0 +1,10 @@
+Make all names unique by appending random string
+
+
+Map dependencies from original (pre-bindgen) wasm
+
+Apply dependencies to post-bindgen wasm (validate?)
+
+
+
+For now we will ignore non-function dependencies
