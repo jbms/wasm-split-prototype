@@ -9,14 +9,17 @@ crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1.0.82"
-async-compression = { version = "0.4.8", features = ["brotli", "futures-io", "gzip", "zlib"] }
+async-compression = { version = "0.4.8", features = ["futures-io"] }
 futures = "0.3.30"
+gloo-console = "0.3.0"
 gloo-net = { version = "0.3.1", default-features = false, features = ["http"] }
 js-sys = "0.3.69"
 wasm-bindgen = "0.2.92"
 wasm-bindgen-futures = "0.4.42"
 wasm-streams = "0.4.0"
-wasm_split = { path = "../wasm_split" }
+wasm_split = { path = "../wasm_split", optional = true }
 
 [features]
-split = []
+split = ["dep:wasm_split"]
+gzip = ["async-compression/gzip"]
+brotli = ["async-compression/brotli"]

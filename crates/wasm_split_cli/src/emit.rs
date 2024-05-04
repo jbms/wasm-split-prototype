@@ -307,7 +307,6 @@ impl<'a> ModuleEmitState<'a> {
                         OutputFunctionKind::Defined
                     }
                 } else {
-                    assert!(func_id >= module.imported_funcs.len(), "func_id={func_id}");
                     OutputFunctionKind::IndirectStub
                 };
                 OutputFunction {
@@ -606,10 +605,7 @@ impl<'a> ModuleEmitState<'a> {
             .iter()
             .filter(|OutputFunction { kind, .. }| *kind != OutputFunctionKind::Import)
         {
-            let type_id = self.input_module.defined_funcs
-                [input_func_id - self.input_module.imported_funcs.len()]
-            .type_id;
-            section.function(type_id as u32);
+            section.function(self.input_module.func_type_id(*input_func_id) as u32);
         }
         self.output_module.section(&section);
     }
@@ -783,16 +779,16 @@ impl<'a> ModuleEmitState<'a> {
                     section.raw(&self.get_relocated_data(input_func.body.range())?);
                 }
                 OutputFunctionKind::IndirectStub => {
-                    let input_func = &self.input_module.defined_funcs
-                        [output_func.input_func_id - self.input_module.imported_funcs.len()];
                     let indirect_index = self
                         .emit_state
                         .indirect_functions
                         .function_table_index
                         .get(&output_func.input_func_id)
                         .unwrap();
-
-                    let function = self.generate_indirect_stub(*indirect_index, input_func.type_id);
+                    let function = self.generate_indirect_stub(
+                        *indirect_index,
+                        self.input_module.func_type_id(output_func.input_func_id),
+                    );
                     section.function(&function);
                 }
             }

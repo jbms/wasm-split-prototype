@@ -243,8 +243,12 @@ pub fn get_main_module_roots(
         };
         roots.insert(DepNode::Function(*index as usize));
     }
+    for func_id in 0..module.imported_funcs.len() {
+        roots.insert(DepNode::Function(func_id));
+    }
     for split_point in split_points.iter() {
         roots.remove(&DepNode::Function(split_point.export_func));
+        roots.remove(&DepNode::Function(split_point.import_func));
     }
     roots
 }

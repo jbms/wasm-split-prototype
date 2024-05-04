@@ -346,4 +346,16 @@ impl<'a> InputModule<'a> {
             .collect();
         Ok(module)
     }
+
+    pub fn func_type_id(&self, func_id: InputFuncId) -> FuncTypeId {
+        if func_id < self.imported_funcs.len() {
+            let import_id = self.imported_funcs[func_id];
+            let wasmparser::TypeRef::Func(type_id) = self.imports[import_id].ty else {
+                panic!("Expected import to be a function");
+            };
+            type_id as usize
+        } else {
+            self.defined_funcs[func_id - self.imported_funcs.len()].type_id
+        }
+    }
 }
